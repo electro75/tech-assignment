@@ -1,11 +1,16 @@
 import { createReducer, on } from '@ngrx/store';
+import { PostApiActions } from '../actions/posts.actions';
+import { Post } from '../models/post';
 
-export const initialState = {
+
+
+export const initialState: { posts: Post[] } = {
     posts: [],
 };
 
 export const postsReducer = createReducer(
-    initialState
+    initialState,
+    on(PostApiActions.retrievedPostList, (_state, { posts }) => { return { posts: [...posts] } })
 );
 
 export const activePostReducer = createReducer(

@@ -2,13 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { selectPosts, selectActivePost } from './state/selectors/posts.selectors';
 import { Store } from '@ngrx/store';
+import { AllPostsComponent } from './components/all-posts/all-posts.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, AllPostsComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
+
 })
 export class AppComponent implements OnInit {
 
