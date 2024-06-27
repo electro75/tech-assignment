@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { selectPosts, selectActivePost } from './state/selectors/posts.selectors';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-root',
@@ -8,6 +10,16 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
+
+  constructor(private store: Store) { }
+
   title = 'tech-assignment';
+
+  posts$ = this.store.select(selectPosts);
+  activePostId$ = this.store.select(selectActivePost)
+
+  ngOnInit(): void {
+
+  }
 }
