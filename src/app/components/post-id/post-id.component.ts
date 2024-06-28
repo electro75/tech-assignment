@@ -42,9 +42,9 @@ export class PostIdComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.setValues({
-      activeIndex: 0,
-      displayProp: post_props[0],
-      displayVal: this.post[post_props[0] as keyof Post]
+      activeIndex: 2,
+      displayProp: post_props[2],
+      displayVal: this.post[post_props[2] as keyof Post]
     })
   }
 
