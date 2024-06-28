@@ -59,6 +59,7 @@ export class PostIdComponent implements OnInit, OnDestroy {
     (_state, newState: PostId) => { return { ...newState } }
   )
 
+  // called when component is initialised, and to reset post to default
   initialiseState() {
     this.setValues({
       activeIndex: 0,
@@ -74,6 +75,7 @@ export class PostIdComponent implements OnInit, OnDestroy {
 
   updateDisplayVals() {
 
+    // action is dispatched when post is clicked on first time
     if (this.activePostId != this.post.id) {
       this.store.dispatch(PostActions.selectActivePost({ activePostId: this.post.id }))
     }
