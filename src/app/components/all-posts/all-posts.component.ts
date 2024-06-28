@@ -3,7 +3,7 @@ import { NetworkService } from '../../services/network.service';
 import { Store } from '@ngrx/store';
 import { PostApiActions } from '../../state/actions/posts.actions';
 import { Post } from '../../state/models/post';
-import { selectPosts } from '../../state/selectors/posts.selectors';
+import { selectActivePost, selectPosts } from '../../state/selectors/posts.selectors';
 import { CommonModule } from '@angular/common';
 import { PostIdComponent } from '../post-id/post-id.component';
 
@@ -18,8 +18,13 @@ import { PostIdComponent } from '../post-id/post-id.component';
 export class AllPostsComponent implements OnInit {
 
   public cells = Array(10).fill(0);
+  public activePostId: number = -1;
 
-  constructor(private __network: NetworkService, private store: Store) { }
+  constructor(private __network: NetworkService, private store: Store) {
+    this.store.select(selectActivePost).subscribe(postId => {
+      this.activePostId = postId;
+    })
+  }
 
   $posts = this.store.select(selectPosts);
 

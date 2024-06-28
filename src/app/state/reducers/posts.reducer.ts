@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { PostApiActions } from '../actions/posts.actions';
+import { PostActions, PostApiActions } from '../actions/posts.actions';
 import { Post } from '../models/post';
 
 
@@ -12,4 +12,5 @@ export const postsReducer = createReducer(
 
 export const activePostReducer = createReducer(
     -1,
-)
+    on(PostActions.selectActivePost, (_state, props) => { return props.activePostId })
+);
