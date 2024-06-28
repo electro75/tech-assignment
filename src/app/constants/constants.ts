@@ -1,0 +1,1 @@
+export const post_props = ["id", 'userId', 'title', 'body'];
