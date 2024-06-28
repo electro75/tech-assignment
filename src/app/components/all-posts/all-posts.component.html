@@ -1,7 +1,7 @@
-<section class="w-full">
-    <div class="flex flex-wrap">
-        <div class="single-post" *ngFor="let post of ($posts | async)">
-            <h3>{{post.id}}</h3>
-        </div>
+<section class="w-fit">
+    <div class="grid grid-cols-10 gap-2">
+        @for(post of ($posts|async); track post.id) {
+        <app-post-id [post]="post"></app-post-id>
+        }
     </div>
 </section>
