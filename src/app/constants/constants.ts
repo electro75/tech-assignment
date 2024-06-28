@@ -1,1 +1,1 @@
-export const post_props = ["id", 'userId', 'title', 'body'];
+export const post_props = ['title', "userId", "id", 'body'];
