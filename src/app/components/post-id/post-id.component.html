@@ -2,3 +2,7 @@
 <!-- <div class="w-32 text-center p-4 border-2 rounded cursor-pointer" (click)="updateDisplayProp()">
     <p> {{getActiveProp()}}: {{getDisplayProp()}}</p>
 </div> -->
+
+<div class="w-32 text-center p-4 border-2 rounded cursor-pointer" (click)="updateDisplayVals()">
+    <p> {{displayProp$ | async}}: {{displaVal$ | async}}</p>
+</div>

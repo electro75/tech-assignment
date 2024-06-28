@@ -1,7 +1,10 @@
 <section class="w-fit">
+
     <div class="grid grid-cols-10 gap-2">
         @for(post of ($posts|async); track post.id) {
         <app-post-id [post]="post"></app-post-id>
         }
     </div>
+
+
 </section>
