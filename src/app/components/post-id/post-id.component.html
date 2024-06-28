@@ -3,6 +3,9 @@
     <p> {{getActiveProp()}}: {{getDisplayProp()}}</p>
 </div> -->
 
-<div class="w-32 text-center p-4 border-2 rounded cursor-pointer" (click)="updateDisplayVals()">
-    <p> {{displayProp$ | async}}: {{displaVal$ | async}}</p>
+<div class="w-32 h-32 p-2 border-2 rounded cursor-pointer overflow-y-scroll no-scrollbar "
+    (click)="updateDisplayVals()">
+    <p class="text-xs"> <strong>
+            {{displayProp$ | async}}
+        </strong>: {{displaVal$ | async}}</p>
 </div>
