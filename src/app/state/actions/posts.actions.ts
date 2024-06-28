@@ -8,3 +8,10 @@ export const PostApiActions = createActionGroup({
         'Retrieved Post List': props<{ posts: ReadonlyArray<Post> }>(),
     },
 });
+
+export const PostActions = createActionGroup({
+    source: 'Posts',
+    events: {
+        'Select Active Post': props<{ activePostId: number }>()
+    }
+})

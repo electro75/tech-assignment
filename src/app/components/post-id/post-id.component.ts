@@ -4,6 +4,9 @@ import { post_props } from '../../constants/constants';
 import { ComponentStore } from '@ngrx/component-store';
 import { PostId } from '../../state/models/post_id';
 import { CommonModule } from '@angular/common';
+import { Store } from '@ngrx/store';
+import { selectActivePost } from '../../state/selectors/posts.selectors';
+import { PostActions } from '../../state/actions/posts.actions';
 
 @Component({
   selector: 'app-post-id',
@@ -16,8 +19,9 @@ import { CommonModule } from '@angular/common';
 export class PostIdComponent implements OnInit, OnDestroy {
 
   public currentIndexVal: number = -1;
+  public activePostId: number = -1;
 
-  constructor(private __cStore: ComponentStore<PostId>) {
+  constructor(private __cStore: ComponentStore<PostId>, private store: Store) {
     this.__cStore.setState({
       activeIndex: -1,
       displayProp: '',
@@ -28,19 +32,30 @@ export class PostIdComponent implements OnInit, OnDestroy {
       source: this,
       activeIndex: state.activeIndex,
     })).subscribe(val => this.currentIndexVal = val.activeIndex);
+
+    this.store.select(selectActivePost).subscribe(activePostId => {
+      this.activePostId = activePostId;
+      if (this.post.id !== activePostId) {
+        this.initialiseState();
+      }
+    })
   }
 
   public displayProp$ = this.__cStore.select((state) => { return state.displayProp })
   public displaVal$ = this.__cStore.select((state) => { return state.displayVal })
 
-  @Input() post: Post = {};
+  @Input() post: Post = {
+    id: -1,
+    userId: -1,
+    body: '',
+    title: ''
+  };
 
   setValues = this.__cStore.updater(
     (_state, newState: PostId) => { return { ...newState } }
   )
 
-
-  ngOnInit(): void {
+  initialiseState() {
     this.setValues({
       activeIndex: 2,
       displayProp: post_props[2],
@@ -48,7 +63,17 @@ export class PostIdComponent implements OnInit, OnDestroy {
     })
   }
 
+
+  ngOnInit(): void {
+    this.initialiseState();
+  }
+
   updateDisplayVals() {
+
+    if (this.activePostId != this.post.id) {
+      this.store.dispatch(PostActions.selectActivePost({ activePostId: this.post.id }))
+    }
+
     let updateIndex = (this.currentIndexVal < post_props.length - 1) ? this.currentIndexVal + 1 : 0;
     let updatedProp = post_props[updateIndex];
     let updatedVal = this.post[updatedProp as keyof Post];
