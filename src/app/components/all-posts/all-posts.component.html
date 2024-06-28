@@ -1,6 +1,6 @@
-<section>
-    <div class="w-full p-4 text-center">
-        <h1 class="text-3xl text-pretty">
+<section class="top-0 z-50 sticky bg-slate-100">
+    <div class="w-full p-2 px-4">
+        <h1 class="text-xl text-pretty">
             @if(activePostId > 0) {
             Active Post Id : {{activePostId}}
             }
@@ -11,8 +11,8 @@
     </div>
 </section>
 
-<section>
-    <div class="grid grid-cols-10 gap-4">
+<section class="p-2 mt-2">
+    <div class="grid grid-cols-10 gap-2">
         @for(post of ($posts|async); track post.id) {
         <app-post-id [post]="post"></app-post-id>
         }

@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { selectActivePost } from '../../state/selectors/posts.selectors';
 import { PostActions } from '../../state/actions/posts.actions';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-post-id',
@@ -21,6 +22,9 @@ export class PostIdComponent implements OnInit, OnDestroy {
   public currentIndexVal: number = -1;
   public activePostId: number = -1;
 
+  currentIndexSubscription: Subscription;
+  activePostIdSubscription: Subscription;
+
   constructor(private __cStore: ComponentStore<PostId>, private store: Store) {
     this.__cStore.setState({
       activeIndex: -1,
@@ -28,12 +32,12 @@ export class PostIdComponent implements OnInit, OnDestroy {
       displayVal: ''
     })
 
-    this.__cStore.select((state) => ({
+    this.currentIndexSubscription = this.__cStore.select((state) => ({
       source: this,
       activeIndex: state.activeIndex,
     })).subscribe(val => this.currentIndexVal = val.activeIndex);
 
-    this.store.select(selectActivePost).subscribe(activePostId => {
+    this.activePostIdSubscription = this.store.select(selectActivePost).subscribe(activePostId => {
       this.activePostId = activePostId;
       if (this.post.id !== activePostId) {
         this.initialiseState();
@@ -57,9 +61,9 @@ export class PostIdComponent implements OnInit, OnDestroy {
 
   initialiseState() {
     this.setValues({
-      activeIndex: 2,
-      displayProp: post_props[2],
-      displayVal: this.post[post_props[2] as keyof Post]
+      activeIndex: 0,
+      displayProp: post_props[0],
+      displayVal: this.post[post_props[0] as keyof Post]
     })
   }
 
@@ -86,7 +90,8 @@ export class PostIdComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-
+    this.activePostIdSubscription.unsubscribe();
+    this.currentIndexSubscription.unsubscribe();
   }
 
   // naive approach - causes too many renders. App will get laggy for larger datasets
