@@ -1,30 +1,37 @@
-<section class="top-0 left-0 z-50 sticky bg-slate-100">
-    <div class="w-full p-2 px-4 flex justify-between items-center">
-        <h1 class="text-xl text-pretty">
-            @if(activePostId > 0) {
-            Active Post Id : {{activePostId}}
-            }
-            @else {
-            No Post selected
-            }
-        </h1>
-        <button class="bg-red-600 active:bg-red-700 text-white font-bold py-2 px-2 rounded inline-flex items-center"
-            (click)="resetActivePost()">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="size-4">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-            </svg>
-        </button>
-    </div>
-</section>
+<div class="bg-slate-100">
+    <section class="top-0 left-0 z-50 sticky bg-lime-100">
+        <div class="w-full p-2 px-4 flex justify-between items-center">
+            <h1 class="text-xl text-pretty">
+                @if(activePostId > 0) {
+                Active Post Id : {{activePostId}}
+                }
+                @else {
+                No Post selected
+                }
+            </h1>
+            <button
+                class="bg-lime-400 active:bg-lime-500 text-white font-bold py-2 px-2 rounded inline-flex items-center"
+                (click)="resetActivePost()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="size-4">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                </svg>
 
-<section class="p-2 mt-2">
-    <div class="grid grid-cols-4 md:grid-cols-10  md:gap-2" id="postRender">
-        @for(post of ($posts|async); track post.id) {
-        <div class="col-span-1">
-            <app-post-id [post]="post"></app-post-id>
+            </button>
+        </div>
+    </section>
+
+    <section class="p-2 mt-2">
+        <div class="overflow-x-scroll no-scrollbar">
+            <div class="grid grid-cols-10 md:gap-2 post-container" id="postRender">
+                @for(post of ($posts|async); track post.id) {
+                <div class="col-span-1">
+                    <app-post-id [post]="post"></app-post-id>
+                </div>
+                }
+            </div>
         </div>
 
-        }
-    </div>
-</section>
+    </section>
+</div>
