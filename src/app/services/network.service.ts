@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, throwError } from 'rxjs';
+import { map } from 'rxjs';
 import { Post } from '../state/models/post';
 
 @Injectable({
