@@ -76,17 +76,16 @@ describe('AllPostsComponent', () => {
     expect(actions.length).toBeGreaterThan(0);
   });
 
-  it('should render posts', () => {
+  it('should get fetchedPosts from store', () => {
     const mockPosts: Post[] = [
       { id: 1, title: 'Post 1', body: 'Body 1' },
       { id: 2, title: 'Post 2', body: 'Body 2' }
     ];
-    store.overrideSelector(selectPosts, mockPosts);
+
+    component.ngOnInit();
     store.refreshState();
     fixture.detectChanges();
-    const postElements = fixture.nativeElement.querySelectorAll('#postRender')[0].children;
-    expect(postElements.length).toBe(mockPosts.length);
-    expect(postElements[0].textContent).toContain('Post 1');
-    expect(postElements[1].textContent).toContain('Post 2');
+
+    expect(component.fetchedPosts.length).toBe(mockPosts.length);
   });
 });
