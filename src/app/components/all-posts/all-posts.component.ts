@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NetworkService } from '../../services/network.service';
 import { Store } from '@ngrx/store';
-import { PostApiActions } from '../../state/actions/posts.actions';
+import { PostActions, PostApiActions } from '../../state/actions/posts.actions';
 import { Post } from '../../state/models/post';
 import { selectActivePost, selectPosts } from '../../state/selectors/posts.selectors';
 import { CommonModule } from '@angular/common';
@@ -34,5 +34,9 @@ export class AllPostsComponent implements OnInit {
       .subscribe((posts) => {
         this.store.dispatch(PostApiActions.retrievedPostList({ posts }))
       })
+  }
+
+  resetActivePost() {
+    this.store.dispatch(PostActions.selectActivePost({ activePostId: -1 }))
   }
 }
