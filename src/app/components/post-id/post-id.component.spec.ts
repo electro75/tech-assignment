@@ -1,23 +1,96 @@
-// import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { ComponentStore } from '@ngrx/component-store';
+import { PostIdComponent } from './post-id.component';
+import { selectActivePost } from '../../state/selectors/posts.selectors';
+import { PostActions } from '../../state/actions/posts.actions';
+import { Post } from '../../state/models/post';
+import { PostId } from '../../state/models/post_id';
+import { CommonModule } from '@angular/common';
+import { By } from '@angular/platform-browser';
 
-// import { PostIdComponent } from './post-id.component';
+describe('PostIdComponent', () => {
+    let component: PostIdComponent;
+    let fixture: ComponentFixture<PostIdComponent>;
+    let store: MockStore;
+    let initialState: any;
 
-// describe('PostIdComponent', () => {
-//   let component: PostIdComponent;
-//   let fixture: ComponentFixture<PostIdComponent>;
+    beforeEach(async () => {
+        initialState = { posts: [], activePost: -1 };
 
-//   beforeEach(async () => {
-//     await TestBed.configureTestingModule({
-//       imports: [PostIdComponent]
-//     })
-//     .compileComponents();
+        await TestBed.configureTestingModule({
+            imports: [CommonModule, PostIdComponent],
+            declarations: [],
+            providers: [
+                provideMockStore({ initialState }),
+                ComponentStore
+            ]
+        }).compileComponents();
 
-//     fixture = TestBed.createComponent(PostIdComponent);
-//     component = fixture.componentInstance;
-//     fixture.detectChanges();
-//   });
+        store = TestBed.inject(MockStore);
+        fixture = TestBed.createComponent(PostIdComponent);
+        component = fixture.componentInstance;
+    });
 
-//   it('should create', () => {
-//     expect(component).toBeTruthy();
-//   });
-// });
+    it('should create the component', () => {
+        expect(component).toBeTruthy();
+    });
+
+    it('should initialize state correctly', () => {
+        component.post = { id: 1, userId: 1, title: 'Test Post', body: 'This is a test post.' };
+        component.ngOnInit();
+
+        expect(component.currentIndexVal).toBe(0);
+        expect(component.activePostId).toBe(-1);
+
+        component.displayProp$.subscribe(displayProp => {
+            expect(displayProp).toBe('title');
+        });
+
+        component.displaVal$.subscribe(displayVal => {
+            expect(displayVal).toBe('Test Post');
+        });
+    });
+
+    it('should select active post from store', () => {
+        const mockPostId = 123;
+        store.overrideSelector(selectActivePost, mockPostId);
+        store.refreshState();
+        fixture.detectChanges();
+
+        expect(component.activePostId).toBe(mockPostId);
+    });
+
+    it('should update display values on updateDisplayVals call', () => {
+        component.post = { id: 1, userId: 1, title: 'Test Post', body: 'This is a test post.' };
+        component.initialiseState();
+        component.updateDisplayVals();
+
+        component.displayProp$.subscribe(displayProp => {
+            expect(displayProp).toBe('userId'); // assuming `post_props[1]` is 'userId'
+        });
+
+        component.displaVal$.subscribe(displayVal => {
+            expect(displayVal).toBe(1);
+        });
+    });
+
+    it('should dispatch action when post is clicked for the first time', () => {
+        spyOn(store, 'dispatch');
+        component.post = { id: 1, userId: 1, title: 'Test Post', body: 'This is a test post.' };
+        component.ngOnInit();
+        component.updateDisplayVals();
+
+        expect(store.dispatch).toHaveBeenCalledWith(PostActions.selectActivePost({ activePostId: 1 }));
+    });
+
+    it('should unsubscribe on destroy', () => {
+        spyOn(component.currentIndexSubscription, 'unsubscribe');
+        spyOn(component.activePostIdSubscription, 'unsubscribe');
+
+        component.ngOnDestroy();
+
+        expect(component.currentIndexSubscription.unsubscribe).toHaveBeenCalled();
+        expect(component.activePostIdSubscription.unsubscribe).toHaveBeenCalled();
+    });
+});

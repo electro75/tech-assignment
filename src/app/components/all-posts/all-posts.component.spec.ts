@@ -6,7 +6,7 @@ import { PostApiActions } from '../../state/actions/posts.actions';
 import { selectActivePost, selectPosts } from '../../state/selectors/posts.selectors';
 import { of } from 'rxjs';
 import { Post } from '../../state/models/post';
-import { HttpClientTestingModule, provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CommonModule } from '@angular/common';
 import { PostIdComponent } from '../post-id/post-id.component';
 import { provideHttpClient } from '@angular/common/http';
@@ -23,7 +23,7 @@ describe('AllPostsComponent', () => {
     const networkServiceSpy = jasmine.createSpyObj('NetworkService', ['getAllPosts']);
 
     await TestBed.configureTestingModule({
-      imports: [CommonModule, HttpClientTestingModule, AllPostsComponent, PostIdComponent],
+      imports: [CommonModule, AllPostsComponent, PostIdComponent],
       providers: [
         provideMockStore({ initialState }),
         provideHttpClient(),
@@ -43,6 +43,9 @@ describe('AllPostsComponent', () => {
   });
 
   it('should have default activePostId of -1', () => {
+    const mockPostId = -1;
+    store.overrideSelector(selectActivePost, mockPostId);
+    store.refreshState()
     expect(component.activePostId).toBe(-1);
   });
 
