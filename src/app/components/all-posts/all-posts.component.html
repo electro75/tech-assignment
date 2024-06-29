@@ -1,9 +1,9 @@
 <div class="bg-slate-100">
-    <section class="top-0 left-0 z-50 sticky bg-lime-100">
+    <section class="top-0 left-0 z-50 sticky bg-white border-b-4 border-lime-100">
         <div class="w-full p-2 px-4 flex justify-between items-center">
-            <h1 class="text-xl text-pretty">
+            <h1 class="text-xl font-bold text-pretty">
                 @if(activePostId > 0) {
-                Active Post Id : {{activePostId}}
+                Active Post ID : {{activePostId}}
                 }
                 @else {
                 No Post selected
@@ -24,13 +24,32 @@
 
     <section class="p-2 mt-2">
         <div class="overflow-x-scroll no-scrollbar">
-            <div class="grid grid-cols-10 md:gap-2 post-container" id="postRender">
-                @for(post of ($posts|async); track post.id) {
+            @if(!loading && fetchedPosts.length) {
+            <div class="grid grid-cols-10 gap-2 post-container" id="postRender">
+                @for(post of (fetchedPosts); track post.id) {
                 <div class="col-span-1">
                     <app-post-id [post]="post"></app-post-id>
                 </div>
                 }
             </div>
+            }
+            @if(loading) {
+            <div class="h-screen flex justify-center items-center">
+                <p>
+                    Fetching Posts....
+                </p>
+
+            </div>
+            }
+            @if(!loading && !fetchedPosts.length) {
+            <div class="h-screen flex justify-center items-center">
+                <p>
+                    Sorry having trouble fetching posts, please try again later
+                </p>
+
+            </div>
+            }
+
         </div>
 
     </section>

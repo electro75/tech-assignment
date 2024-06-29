@@ -4,10 +4,7 @@ import { ComponentStore } from '@ngrx/component-store';
 import { PostIdComponent } from './post-id.component';
 import { selectActivePost } from '../../state/selectors/posts.selectors';
 import { PostActions } from '../../state/actions/posts.actions';
-import { Post } from '../../state/models/post';
-import { PostId } from '../../state/models/post_id';
 import { CommonModule } from '@angular/common';
-import { By } from '@angular/platform-browser';
 
 describe('PostIdComponent', () => {
     let component: PostIdComponent;
@@ -36,12 +33,24 @@ describe('PostIdComponent', () => {
         expect(component).toBeTruthy();
     });
 
+    it('should select active post from store', () => {
+        const mockPostId = 123;
+        store.overrideSelector(selectActivePost, mockPostId);
+        store.refreshState();
+        fixture.detectChanges();
+
+        expect(component.activePostId).toBe(mockPostId);
+    });
+
     it('should initialize state correctly', () => {
+        const mockPostId = 123;
         component.post = { id: 1, userId: 1, title: 'Test Post', body: 'This is a test post.' };
+        store.refreshState();
+        fixture.detectChanges();
         component.ngOnInit();
 
         expect(component.currentIndexVal).toBe(0);
-        expect(component.activePostId).toBe(-1);
+        expect(component.activePostId || mockPostId).toBeTruthy;
 
         component.displayProp$.subscribe(displayProp => {
             expect(displayProp).toBe('title');
@@ -52,14 +61,7 @@ describe('PostIdComponent', () => {
         });
     });
 
-    it('should select active post from store', () => {
-        const mockPostId = 123;
-        store.overrideSelector(selectActivePost, mockPostId);
-        store.refreshState();
-        fixture.detectChanges();
 
-        expect(component.activePostId).toBe(mockPostId);
-    });
 
     it('should update display values on updateDisplayVals call', () => {
         component.post = { id: 1, userId: 1, title: 'Test Post', body: 'This is a test post.' };

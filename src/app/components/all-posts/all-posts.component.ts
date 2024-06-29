@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NetworkService } from '../../services/network.service';
 import { Store } from '@ngrx/store';
 import { PostActions, PostApiActions } from '../../state/actions/posts.actions';
@@ -15,10 +15,11 @@ import { PostIdComponent } from '../post-id/post-id.component';
   styleUrl: './all-posts.component.scss',
   providers: [NetworkService]
 })
-export class AllPostsComponent implements OnInit {
+export class AllPostsComponent implements OnInit, OnDestroy {
 
-  public cells = Array(10).fill(0);
   public activePostId: number = -1;
+  public loading: boolean = false;
+  public fetchedPosts: Post[] = [];
 
   constructor(private __network: NetworkService, private store: Store) {
     this.store.select(selectActivePost).subscribe(postId => {
@@ -26,17 +27,28 @@ export class AllPostsComponent implements OnInit {
     })
   }
 
-  $posts = this.store.select(selectPosts);
+  $posts = this.store.select(selectPosts).subscribe(posts => {
+    this.fetchedPosts = [...posts];
+  });
 
   ngOnInit() {
+    this.loading = true;
     this.__network
       .getAllPosts()
       .subscribe((posts) => {
+        this.loading = false
         this.store.dispatch(PostApiActions.retrievedPostList({ posts }))
+      }, (e) => {
+        console.log(e);
+        this.loading = false;
       })
   }
 
   resetActivePost() {
     this.store.dispatch(PostActions.selectActivePost({ activePostId: -1 }))
+  }
+
+  ngOnDestroy(): void {
+    this.$posts.unsubscribe();
   }
 }
