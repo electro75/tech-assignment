@@ -76,12 +76,13 @@ describe('AllPostsComponent', () => {
     expect(actions.length).toBeGreaterThan(0);
   });
 
-  it('should get fetchedPosts from store', () => {
+  it('should get post list from store', () => {
     const mockPosts: Post[] = [
       { id: 1, title: 'Post 1', body: 'Body 1' },
       { id: 2, title: 'Post 2', body: 'Body 2' }
     ];
 
+    store.overrideSelector(selectPosts, mockPosts);
     component.ngOnInit();
     store.refreshState();
     fixture.detectChanges();
