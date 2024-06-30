@@ -1,6 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Post } from '../../state/models/post';
-import { post_props } from '../../constants/constants';
 import { ComponentStore } from '@ngrx/component-store';
 import { PostId } from '../../state/models/post_id';
 import { CommonModule } from '@angular/common';
@@ -28,13 +27,15 @@ export class PostIdComponent implements OnInit, OnDestroy {
   public $activePostId: Subscription;
 
   public $displayProp: Observable<string>;
-  public $displaVal: Observable<string | number>;
+  public $displaVal: Observable<unknown>;
+
+  public postProps: string[] = [];
 
   constructor(private __cStore: ComponentStore<PostId>, private store: Store) {
     this.__cStore.setState({
       activeIndex: -1,
       displayProp: '',
-      displayVal: ''
+      displayVal: '',
     })
 
     this.$currentIndex = this.__cStore.select((state) => ({
@@ -42,12 +43,7 @@ export class PostIdComponent implements OnInit, OnDestroy {
       activeIndex: state.activeIndex,
     })).subscribe(val => this.currentIndexVal = val.activeIndex);
 
-    this.$activePostId = this.store.select(selectActivePost).subscribe(activePostId => {
-      this.activePostId = activePostId;
-      if (this.post.id !== activePostId) {
-        this.initialiseState();
-      }
-    })
+
 
     this.$displayProp = this.__cStore.select((state) => { return state.displayProp })
     this.$displaVal = this.__cStore.select((state) => { return state.displayVal })
@@ -58,6 +54,13 @@ export class PostIdComponent implements OnInit, OnDestroy {
       body: '',
       title: ''
     };
+
+    this.$activePostId = this.store.select(selectActivePost).subscribe(activePostId => {
+      this.activePostId = activePostId;
+      if (this.post.id !== activePostId) {
+        this.initialiseState();
+      }
+    })
   }
 
   setValues = this.__cStore.updater(
@@ -66,10 +69,12 @@ export class PostIdComponent implements OnInit, OnDestroy {
 
   // called when component is initialised, and to reset post to default
   initialiseState() {
+    this.postProps = Object.keys(this.post).map(key => key);
+    let defaultIndex = this.postProps.findIndex((el) => el === 'title')
     this.setValues({
-      activeIndex: 0,
-      displayProp: post_props[0],
-      displayVal: this.post[post_props[0] as keyof Post]
+      activeIndex: defaultIndex,
+      displayProp: this.postProps[defaultIndex],
+      displayVal: this.post[this.postProps[defaultIndex] as keyof Post],
     })
   }
 
@@ -85,8 +90,8 @@ export class PostIdComponent implements OnInit, OnDestroy {
     }
 
     // logic for cycling through the keys
-    let updateIndex = (this.currentIndexVal < post_props.length - 1) ? this.currentIndexVal + 1 : 0;
-    let updatedProp = post_props[updateIndex];
+    let updateIndex = (this.currentIndexVal < this.postProps.length - 1) ? this.currentIndexVal + 1 : 0;
+    let updatedProp = this.postProps[updateIndex];
     let updatedVal = this.post[updatedProp as keyof Post];
 
     this.setValues({
