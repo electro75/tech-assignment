@@ -6,6 +6,7 @@ import { Post } from '../../state/models/post';
 import { selectActivePost, selectPosts } from '../../state/selectors/posts.selectors';
 import { CommonModule } from '@angular/common';
 import { PostIdComponent } from '../post-id/post-id.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-all-posts',
@@ -17,20 +18,29 @@ import { PostIdComponent } from '../post-id/post-id.component';
 })
 export class AllPostsComponent implements OnInit, OnDestroy {
 
+  public $activePostId: Subscription;
+  public $posts: Subscription;
+
   public activePostId: number = -1;
   public loading: boolean = false;
   public fetchedPosts: Post[] = [];
 
   constructor(private __network: NetworkService, private store: Store) {
-    this.store.select(selectActivePost).subscribe(postId => {
+
+    // to display the current active post
+    this.$activePostId = this.store.select(selectActivePost).subscribe(postId => {
       this.activePostId = postId;
-    })
+    });
+
+    // store in local variable to track loading/error states
+    this.$posts = this.store.select(selectPosts).subscribe(posts => {
+      this.fetchedPosts = [...posts];
+    });
   }
 
-  $posts = this.store.select(selectPosts).subscribe(posts => {
-    this.fetchedPosts = [...posts];
-  });
 
+
+  // fetch all posts on load and store them in global state
   ngOnInit() {
     this.loading = true;
     this.__network
@@ -50,5 +60,6 @@ export class AllPostsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.$posts.unsubscribe();
+    this.$activePostId.unsubscribe();
   }
 }
