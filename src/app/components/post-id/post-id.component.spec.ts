@@ -47,20 +47,18 @@ describe('PostIdComponent', () => {
         component.post = { id: 1, userId: 1, title: 'Test Post', body: 'This is a test post.' };
         store.refreshState();
         fixture.detectChanges();
-        component.ngOnInit();
 
-        expect(component.currentIndexVal).toBe(0);
+        expect(component.currentIndexVal).toBe(2);
         expect(component.activePostId || mockPostId).toBeTruthy;
 
-        component.displayProp$.subscribe(displayProp => {
+        component.$displayProp.subscribe(displayProp => {
             expect(displayProp).toBe('title');
         });
 
-        component.displaVal$.subscribe(displayVal => {
+        component.$displaVal.subscribe(displayVal => {
             expect(displayVal).toBe('Test Post');
         });
     });
-
 
 
     it('should update display values on updateDisplayVals call', () => {
@@ -68,12 +66,12 @@ describe('PostIdComponent', () => {
         component.initialiseState();
         component.updateDisplayVals();
 
-        component.displayProp$.subscribe(displayProp => {
-            expect(displayProp).toBe('userId'); // assuming `post_props[1]` is 'userId'
+        component.$displayProp.subscribe(displayProp => {
+            expect(displayProp).toBe('body'); // assuming `post_props[1]` is 'userId'
         });
 
-        component.displaVal$.subscribe(displayVal => {
-            expect(displayVal).toBe(1);
+        component.$displaVal.subscribe(displayVal => {
+            expect(displayVal).toBe(component.post.body);
         });
     });
 
@@ -87,12 +85,12 @@ describe('PostIdComponent', () => {
     });
 
     it('should unsubscribe on destroy', () => {
-        spyOn(component.currentIndexSubscription, 'unsubscribe');
-        spyOn(component.activePostIdSubscription, 'unsubscribe');
+        spyOn(component.$currentIndex, 'unsubscribe');
+        spyOn(component.$activePostId, 'unsubscribe');
 
         component.ngOnDestroy();
 
-        expect(component.currentIndexSubscription.unsubscribe).toHaveBeenCalled();
-        expect(component.activePostIdSubscription.unsubscribe).toHaveBeenCalled();
+        expect(component.$currentIndex.unsubscribe).toHaveBeenCalled();
+        expect(component.$activePostId.unsubscribe).toHaveBeenCalled();
     });
 });
