@@ -56,9 +56,9 @@
 
 
 ##### 3. Explain the difference between mutable and immutable objects.
-   ● What is an example of an immutable object in JavaScript?
-   ● What are the pros and cons of immutability?
-   ● How can you achieve immutability in your own code?
+   - What is an example of an immutable object in JavaScript?
+   - What are the pros and cons of immutability?
+   - How can you achieve immutability in your own code?
 
 ##### Answer
  - Primary difference between mutable and immutable objects is that the state of mutable objects can be changed after they are created whereas, the state of immutable objects cannot be changed.

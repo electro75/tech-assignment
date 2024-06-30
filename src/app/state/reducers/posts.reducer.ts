@@ -3,7 +3,8 @@ import { PostActions, PostApiActions } from '../actions/posts.actions';
 import { Post } from '../models/post';
 
 
-export const initialState: Post[] = [];
+const initialState: Post[] = [];
+const initialActivePostId: number = -1;
 
 export const postsReducer = createReducer(
     initialState,
@@ -11,6 +12,6 @@ export const postsReducer = createReducer(
 );
 
 export const activePostReducer = createReducer(
-    -1,
+    initialActivePostId,
     on(PostActions.selectActivePost, (_state, props) => { return props.activePostId })
 );

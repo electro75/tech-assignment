@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { selectActivePost } from '../../state/selectors/posts.selectors';
 import { PostActions } from '../../state/actions/posts.actions';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-post-id',
@@ -19,11 +19,16 @@ import { Subscription } from 'rxjs';
 })
 export class PostIdComponent implements OnInit, OnDestroy {
 
+  @Input() post: Post;
+
   public currentIndexVal: number = -1;
   public activePostId: number = -1;
 
-  currentIndexSubscription: Subscription;
-  activePostIdSubscription: Subscription;
+  public $currentIndex: Subscription;
+  public $activePostId: Subscription;
+
+  public $displayProp: Observable<string>;
+  public $displaVal: Observable<string | number>;
 
   constructor(private __cStore: ComponentStore<PostId>, private store: Store) {
     this.__cStore.setState({
@@ -32,28 +37,28 @@ export class PostIdComponent implements OnInit, OnDestroy {
       displayVal: ''
     })
 
-    this.currentIndexSubscription = this.__cStore.select((state) => ({
+    this.$currentIndex = this.__cStore.select((state) => ({
       source: this,
       activeIndex: state.activeIndex,
     })).subscribe(val => this.currentIndexVal = val.activeIndex);
 
-    this.activePostIdSubscription = this.store.select(selectActivePost).subscribe(activePostId => {
+    this.$activePostId = this.store.select(selectActivePost).subscribe(activePostId => {
       this.activePostId = activePostId;
       if (this.post.id !== activePostId) {
         this.initialiseState();
       }
     })
+
+    this.$displayProp = this.__cStore.select((state) => { return state.displayProp })
+    this.$displaVal = this.__cStore.select((state) => { return state.displayVal })
+
+    this.post = {
+      id: -1,
+      userId: -1,
+      body: '',
+      title: ''
+    };
   }
-
-  public displayProp$ = this.__cStore.select((state) => { return state.displayProp })
-  public displaVal$ = this.__cStore.select((state) => { return state.displayVal })
-
-  @Input() post: Post = {
-    id: -1,
-    userId: -1,
-    body: '',
-    title: ''
-  };
 
   setValues = this.__cStore.updater(
     (_state, newState: PostId) => { return { ...newState } }
@@ -68,7 +73,6 @@ export class PostIdComponent implements OnInit, OnDestroy {
     })
   }
 
-
   ngOnInit(): void {
     this.initialiseState();
   }
@@ -80,6 +84,7 @@ export class PostIdComponent implements OnInit, OnDestroy {
       this.store.dispatch(PostActions.selectActivePost({ activePostId: this.post.id }))
     }
 
+    // logic for cycling through the keys
     let updateIndex = (this.currentIndexVal < post_props.length - 1) ? this.currentIndexVal + 1 : 0;
     let updatedProp = post_props[updateIndex];
     let updatedVal = this.post[updatedProp as keyof Post];
@@ -92,8 +97,8 @@ export class PostIdComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.activePostIdSubscription.unsubscribe();
-    this.currentIndexSubscription.unsubscribe();
+    this.$activePostId.unsubscribe();
+    this.$currentIndex.unsubscribe();
   }
 
   // naive approach - causes too many renders. App will get laggy for larger datasets
