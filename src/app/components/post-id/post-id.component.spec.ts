@@ -68,7 +68,7 @@ describe('PostIdComponent', () => {
         component.updateDisplayVals();
 
         component.$displayProp.subscribe(displayProp => {
-            expect(displayProp).toBe('body'); // assuming `post_props[1]` is 'userId'
+            expect(displayProp).toBe('body');
         });
 
         component.$displaVal.subscribe(displayVal => {

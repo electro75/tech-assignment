@@ -28,7 +28,7 @@ describe('NetworkService', () => {
     });
     const req = httpTesting.expectOne('https://jsonplaceholder.typicode.com/posts', 'Request to fetch posts');
     expect(req.request.method).toBe('GET');
-    req.flush(dummyPosts); // Respond with the dummy posts
+    req.flush(dummyPosts);
     httpTesting.verify();
   })
 });
