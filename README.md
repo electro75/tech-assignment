@@ -4,6 +4,7 @@
  - Uses Tailwind for CSS goodness.
  - NgRx Store added for efficient state management.
  - Cypress for end to end testing.
+ - A working demo of the assignment can be found [here](https://blogposts-tech-assignment.netlify.app/)
 
 ## Running the code
 
@@ -28,16 +29,15 @@
 
 ##### Answer:
 
- - JWTs (JSON Web Tokens) contain all the information required to authenticate the user minimising server side sessions.
+ - JWTs (JSON Web Tokens) contain all the information required to authenticate the user which minimises server side sessions.
  - JWTs (JSON Web Tokens) are safe when used properly. That means:
     - storing them securely on the web-application using cookies as opposed to localStorage where they are  exposed. 
-    - Https APIs should be used while transferring tokens
+    - APIs should be used in HTTPS mode while transferring tokens as opposed to the much more vulnerable HTTP
     - storing secret keys in environment variables or other secret key managing services.
     - Refresh tokens should be issued to client side applications and stale tokens should be revoked regularly.
-    - Tokens should not contain any sensitive information such as passwords as it can be decoded if the token is leaked.
+    - A tokens should not contain any sensitive information such as passwords as it can be decoded if the token is leaked.
     - Token signature should be verified propely before granting access to resources.
- - Regarding the token in the example, when decoded through [this site](https://jwt.io), reveals that the expiry date of the token is `Wed Dec 31 23:59:59 CEST 1969` indicating that it is expired but does not seem to have anything sensitive. Expired tokens leave systems vulnerable to replay attacks and may give revoked users extended access. Such tokens should be handled by using strict expiry checks.
-
+ - Regarding the token in the example, when decoded through [this site](https://jwt.io), reveals that the expiry date of the token is `Wed Dec 31 23:59:59 CEST 1969` indicating that it is expired but does not seem to have any sensitive information. Expired tokens leave systems vulnerable to replay attacks and may give revoked users extended access. Such tokens should be handled by using strict expiry checks.
 
 
 
@@ -71,14 +71,17 @@
  console.log(a) // [1,2,3,4,5]
  ```
  - in the above example when we perform push action, the same array is modified.
+
  - Updates to immutable objects are performed by replacing with new values. eg:
 
  ```
- let a = 'Hello';
- a = a + ' World';
- console.log(a) // Hello World
+ let a = "Hello";
+ a + " World";
+ console.log(a) // "Hello"
+ a = a + " World";
+ console.log(a)
  ```
- - in this example a is replaced with a new string when we perform + operation.
+ - in this example `a` remains the same even after we perform + operation. We have to replace it with a new string in order to update its value.
 
 
 - Primitive data types such as `String`, `Boolean`, `Number` are examples of immutable objects in javascript.
@@ -90,7 +93,7 @@
       - Immutable functions in ES6 such as `.map`, `.filter` etc. remove the need for clunky for loops making code more readable.
 
    - Cons
-      - increased memory usage especially when creating objects with larger size.
+      - increased memory usage especially when creating object copies with larger size.
       - can require state management frameworks, which have quite a learning curve and may take longer setup times.
 
 
@@ -103,9 +106,10 @@
 ##### Answer
 - Steps that I would take for increasing loading speed of a web application:
    - Implementing lazy loading, where modules are loaded only when necessary (when user clicks on the page associated with that module)
-   - Using caching mechanisms efficiently to load resources on subsequent visits.
+   - Using caching mechanisms such as local storage efficiently to load commonly used resources faster on subsequent visits.
    - CDN services such as AWS cloudfront, offer faster loading of delivery of images
    - Using light formats of images (.webp), results in faster load times.
+   - Adding placeholder images while loading the actual image in background, lets the user interact with the page reducing the page's TTI (Time To Interactive).
    - Focusing on above the fold content, loading images that are further below on the page can be loaded when the user scrolls the page.
    - Leveraging SSR (server side rendering) which delivers fully renderd HTML to the client, which is faster in comparison to rendering on client side
    - Utilizing tools such as google's pagespeed inights and lighthouse which offer insight into loading times on mobile devices as well, can help one audit the application and even get some tips for faster loading
