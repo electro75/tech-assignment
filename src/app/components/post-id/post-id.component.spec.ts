@@ -64,6 +64,7 @@ describe('PostIdComponent', () => {
     it('should update display values on updateDisplayVals call', () => {
         component.post = { id: 1, userId: 1, title: 'Test Post', body: 'This is a test post.' };
         component.initialiseState();
+        component.ngOnInit();
         component.updateDisplayVals();
 
         component.$displayProp.subscribe(displayProp => {

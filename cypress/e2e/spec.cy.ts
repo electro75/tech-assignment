@@ -1,4 +1,4 @@
-describe('My First Test', () => {
+describe('The application', () => {
 
   beforeEach(() => {
     // Navigate to the root URL before each test

@@ -3,6 +3,7 @@
  - This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.0.6.
  - Uses Tailwind for CSS goodness.
  - NgRx Store added for efficient state management.
+ - Cypress for end to end testing.
 
 ## Running the code
 
@@ -10,6 +11,7 @@
  - `ng serve` for a dev server. Navigate to `http://localhost:4200/`.
  - `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
  - `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+ - `ng e2e` to execute the e2e tests via [Cypress](https://docs.cypress.io/guides/overview/why-cypress).
 
  ## Design Choices:
 

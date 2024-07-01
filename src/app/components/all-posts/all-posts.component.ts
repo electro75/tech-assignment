@@ -54,6 +54,7 @@ export class AllPostsComponent implements OnInit, OnDestroy {
       })
   }
 
+  // resets app back to its default state
   resetActivePost() {
     this.store.dispatch(PostActions.selectActivePost({ activePostId: -1 }))
   }
