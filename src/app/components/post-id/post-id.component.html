@@ -1,10 +1,10 @@
-<!-- display template for naive approach -->
-<!-- <div class="w-32 text-center p-4 border-2 rounded cursor-pointer" (click)="updateDisplayProp()">
-    <p> {{getActiveProp()}}: {{getDisplayProp()}}</p>
-</div> -->
-
 <div class="size-28 p-1 border-2 border-lime-100 rounded cursor-pointer overflow-y-scroll no-scrollbar hover:bg-lime-100"
     [ngClass]="{'bg-lime-500 text-white hover:bg-lime-500': activePostId === post.id, 'bg-white': activePostId !== post.id}"
     (click)="updateDisplayVals()">
     <p class="text-xs"><strong class="capitalize">{{$displayProp | async}}</strong>: {{$displaVal | async}}</p>
 </div>
+
+<!-- template for naive approach -->
+<!-- <div class="w-32 text-center p-4 border-2 rounded cursor-pointer" (click)="updateDisplayProp()">
+    <p> {{getActiveProp()}}: {{getDisplayProp()}}</p>
+</div> -->

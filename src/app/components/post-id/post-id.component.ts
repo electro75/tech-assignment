@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Post } from '../../state/models/post';
 import { ComponentStore } from '@ngrx/component-store';
-import { PostId } from '../../state/models/post_id';
+import { PostIdState } from '../../state/models/postIdState';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { selectActivePost } from '../../state/selectors/posts.selectors';
@@ -31,20 +31,21 @@ export class PostIdComponent implements OnInit, OnDestroy {
 
   public postProps: string[] = [];
 
-  constructor(private __cStore: ComponentStore<PostId>, private store: Store) {
+  constructor(private __cStore: ComponentStore<PostIdState>, private store: Store) {
     this.__cStore.setState({
       activeIndex: -1,
       displayProp: '',
       displayVal: '',
     })
 
+    // get index of the key to be dsiplayed
     this.$currentIndex = this.__cStore.select((state) => ({
       source: this,
       activeIndex: state.activeIndex,
     })).subscribe(val => this.currentIndexVal = val.activeIndex);
 
 
-
+    // display the active key value pair
     this.$displayProp = this.__cStore.select((state) => { return state.displayProp })
     this.$displaVal = this.__cStore.select((state) => { return state.displayVal })
 
@@ -64,12 +65,11 @@ export class PostIdComponent implements OnInit, OnDestroy {
   }
 
   setValues = this.__cStore.updater(
-    (_state, newState: PostId) => { return { ...newState } }
+    (_state, newState: PostIdState) => { return { ...newState } }
   )
 
   // called when component is initialised, and to reset post to default
   initialiseState() {
-    this.postProps = Object.keys(this.post).map(key => key);
     let defaultIndex = this.postProps.findIndex((el) => el === 'title')
     this.setValues({
       activeIndex: defaultIndex,
@@ -79,6 +79,7 @@ export class PostIdComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.postProps = Object.keys(this.post).map(key => key);
     this.initialiseState();
   }
 
