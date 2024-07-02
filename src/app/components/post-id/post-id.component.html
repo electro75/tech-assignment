@@ -1,7 +1,7 @@
 <div class="size-28 p-1 border-2 border-lime-100 rounded cursor-pointer overflow-y-scroll no-scrollbar hover:bg-lime-100"
     [ngClass]="{'bg-lime-500 text-white hover:bg-lime-500': activePostId === post.id, 'bg-white': activePostId !== post.id}"
     (click)="updateDisplayVals()">
-    <p class="text-xs"><strong class="capitalize">{{$displayProp | async}}</strong>: {{$displaVal | async}}</p>
+    <p class="text-xs"><strong class="capitalize">{{displayPropSignal()}}</strong>: {{displayValSignal()}}</p>
 </div>
 
 <!-- template for naive approach -->
