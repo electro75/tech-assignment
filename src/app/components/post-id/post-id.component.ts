@@ -28,6 +28,15 @@ export class PostIdComponent implements OnInit, OnDestroy {
   public props = ['userId', 'id', 'title', 'body'];
   public postProps: string[] = [];
 
+  updateSignalVals(indexVal: number) {
+    this.activeIndex = signal(indexVal);
+    this.displayPropSignal = computed(() => {
+      return this.props[this.activeIndex()]
+    }
+    )
+    this.displayValSignal = computed(() => this.post[this.props[this.activeIndex()]])
+  }
+
   constructor(private __cStore: ComponentStore<PostIdState>, private store: Store) {
 
     this.post = {
@@ -44,12 +53,7 @@ export class PostIdComponent implements OnInit, OnDestroy {
       }
     })
 
-    this.activeIndex = signal(0);
-    this.displayPropSignal = computed(() => {
-      return this.props[this.activeIndex()]
-    }
-    )
-    this.displayValSignal = computed(() => this.post[this.props[this.activeIndex()]])
+    this.updateSignalVals(0);
   }
 
   setValues = this.__cStore.updater(
@@ -57,12 +61,7 @@ export class PostIdComponent implements OnInit, OnDestroy {
   )
 
   initialiseState() {
-    this.activeIndex = signal(this.postProps.findIndex((el) => el === 'title'))
-    this.displayPropSignal = computed(() => {
-      return this.props[this.activeIndex()]
-    }
-    )
-    this.displayValSignal = computed(() => this.post[this.props[this.activeIndex()]])
+    this.updateSignalVals(this.postProps.findIndex((el) => el === 'title'))
   }
 
   ngOnInit(): void {
@@ -77,13 +76,7 @@ export class PostIdComponent implements OnInit, OnDestroy {
     }
 
     let currentActiveIndexVal = this.activeIndex()
-
-    this.activeIndex = signal(currentActiveIndexVal < this.props.length - 1 ? currentActiveIndexVal + 1 : 0);
-    this.displayPropSignal = computed(() => {
-      return this.props[this.activeIndex()]
-    }
-    )
-    this.displayValSignal = computed(() => this.post[this.props[this.activeIndex()]])
+    this.updateSignalVals(currentActiveIndexVal < this.props.length - 1 ? currentActiveIndexVal + 1 : 0)
   }
 
   ngOnDestroy(): void {
