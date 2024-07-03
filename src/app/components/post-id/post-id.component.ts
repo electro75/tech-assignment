@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, Signal, WritableSignal, computed, effect, signal } from '@angular/core';
 import { Post } from '../../state/models/post';
 import { ComponentStore } from '@ngrx/component-store';
 import { PostIdState } from '../../state/models/postIdState';
@@ -19,35 +19,20 @@ import { Observable, Subscription } from 'rxjs';
 export class PostIdComponent implements OnInit, OnDestroy {
 
   @Input() post: Post;
-
-  public currentIndexVal: number = -1;
   public activePostId: number = -1;
-
-  public $currentIndex: Subscription;
   public $activePostId: Subscription;
 
-  public $displayProp: Observable<string>;
-  public $displaVal: Observable<unknown>;
-
+  public activeIndex: WritableSignal<number> = signal(0);
+  public displayValSignal: Signal<unknown>;
+  public displayPropSignal: Signal<string>;
+  public props = ['userId', 'id', 'title', 'body'];
   public postProps: string[] = [];
 
+  updateSignalVals(indexVal: number) {
+    this.activeIndex.set(indexVal);
+  }
+
   constructor(private __cStore: ComponentStore<PostIdState>, private store: Store) {
-    this.__cStore.setState({
-      activeIndex: -1,
-      displayProp: '',
-      displayVal: '',
-    })
-
-    // get index of the key to be dsiplayed
-    this.$currentIndex = this.__cStore.select((state) => ({
-      source: this,
-      activeIndex: state.activeIndex,
-    })).subscribe(val => this.currentIndexVal = val.activeIndex);
-
-
-    // display the active key value pair
-    this.$displayProp = this.__cStore.select((state) => { return state.displayProp })
-    this.$displaVal = this.__cStore.select((state) => { return state.displayVal })
 
     this.post = {
       id: -1,
@@ -62,20 +47,20 @@ export class PostIdComponent implements OnInit, OnDestroy {
         this.initialiseState();
       }
     })
+
+    this.displayPropSignal = computed(() => {
+      return this.props[this.activeIndex()]
+    }
+    )
+    this.displayValSignal = computed(() => this.post[this.props[this.activeIndex()]])
   }
 
   setValues = this.__cStore.updater(
     (_state, newState: PostIdState) => { return { ...newState } }
   )
 
-  // called when component is initialised, and to reset post to default
   initialiseState() {
-    let defaultIndex = this.postProps.findIndex((el) => el === 'title')
-    this.setValues({
-      activeIndex: defaultIndex,
-      displayProp: this.postProps[defaultIndex],
-      displayVal: this.post[this.postProps[defaultIndex] as keyof Post],
-    })
+    this.updateSignalVals(this.postProps.findIndex((el) => el === 'title'))
   }
 
   ngOnInit(): void {
@@ -85,26 +70,15 @@ export class PostIdComponent implements OnInit, OnDestroy {
 
   updateDisplayVals() {
 
-    // action is dispatched when post is clicked on first time
     if (this.activePostId != this.post.id) {
       this.store.dispatch(PostActions.selectActivePost({ activePostId: this.post.id }))
     }
 
-    // logic for cycling through the keys
-    let updateIndex = (this.currentIndexVal < this.postProps.length - 1) ? this.currentIndexVal + 1 : 0;
-    let updatedProp = this.postProps[updateIndex];
-    let updatedVal = this.post[updatedProp as keyof Post];
-
-    this.setValues({
-      activeIndex: updateIndex,
-      displayProp: updatedProp,
-      displayVal: updatedVal
-    })
+    let currentActiveIndexVal = this.activeIndex()
+    this.updateSignalVals(currentActiveIndexVal < this.props.length - 1 ? currentActiveIndexVal + 1 : 0)
   }
 
   ngOnDestroy(): void {
-    this.$activePostId.unsubscribe();
-    this.$currentIndex.unsubscribe();
   }
 
   // naive approach - causes too many renders. App will get laggy for larger datasets
