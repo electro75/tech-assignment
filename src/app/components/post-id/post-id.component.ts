@@ -22,19 +22,14 @@ export class PostIdComponent implements OnInit, OnDestroy {
   public activePostId: number = -1;
   public $activePostId: Subscription;
 
-  public activeIndex: WritableSignal<number>;
+  public activeIndex: WritableSignal<number> = signal(0);
   public displayValSignal: Signal<unknown>;
   public displayPropSignal: Signal<string>;
   public props = ['userId', 'id', 'title', 'body'];
   public postProps: string[] = [];
 
   updateSignalVals(indexVal: number) {
-    this.activeIndex = signal(indexVal);
-    this.displayPropSignal = computed(() => {
-      return this.props[this.activeIndex()]
-    }
-    )
-    this.displayValSignal = computed(() => this.post[this.props[this.activeIndex()]])
+    this.activeIndex.set(indexVal);
   }
 
   constructor(private __cStore: ComponentStore<PostIdState>, private store: Store) {
@@ -53,7 +48,11 @@ export class PostIdComponent implements OnInit, OnDestroy {
       }
     })
 
-    this.updateSignalVals(0);
+    this.displayPropSignal = computed(() => {
+      return this.props[this.activeIndex()]
+    }
+    )
+    this.displayValSignal = computed(() => this.post[this.props[this.activeIndex()]])
   }
 
   setValues = this.__cStore.updater(
